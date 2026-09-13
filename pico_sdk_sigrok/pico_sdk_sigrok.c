@@ -766,9 +766,12 @@ int main() {
 #if (UART_EN == 1)
   uart_set_format(uart0, 8, 1, 0);
   uart_init(uart0, UART_BAUD);
-  gpio_set_function(0, GPIO_FUNC_UART);
-  // The uart Rx has never been used, but left in for the baseline definition
-  gpio_set_function(1, GPIO_FUNC_UART);
+gpio_set_function(0, GPIO_FUNC_UART);
+// UART RX is unused. Do not connect GP1 to UART on RP2350 A2.
+// Keep it at a defined level so noise cannot continuously fill the UART RX FIFO.
+gpio_init(1);
+gpio_set_dir(1, GPIO_IN);
+gpio_pull_up(1);
 #endif
   // This sleep may not be necessary, but was added to give USB extra time to
   // come up. But an extra .1 seconds won't bother anything...
